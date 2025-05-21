@@ -1,7 +1,11 @@
 Write-Host "Starting VM creation process..."
 
+# Import Azure context from GitHub Actions login
+Import-AzContext -ErrorAction Stop
+
 # Check if connected to Azure
-if (-not (Get-AzContext)) {
+$context = Get-AzContext
+if (-not $context) {
     Write-Error "Not connected to Azure. Aborting script."
     exit 1
 }
@@ -16,12 +20,13 @@ $adminPassword = ConvertTo-SecureString $env:VM_ADMIN_PASSWORD -AsPlainText -For
 
 # Create resource group
 Write-Host "Creating resource group..."
-New-AzResourceGroup -Name $resourceGroup -Location $location
+New-AzResourceGroup -Name $resourceGroup -Location $location -Force
 
-# Create VM config
-Write-Host "Creating virtual machine config..."
+# Create VM credentials
 $cred = New-Object System.Management.Automation.PSCredential ($adminUsername, $adminPassword)
 
+# Create virtual machine
+Write-Host "Creating virtual machine..."
 New-AzVM `
   -ResourceGroupName $resourceGroup `
   -Name $vmName `
