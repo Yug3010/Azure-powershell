@@ -22,8 +22,6 @@ jobs:
         shell: pwsh
         run: Install-Module -Name Az -Force -AllowClobber -Scope CurrentUser
 
-      - name: Run create-vm.ps1
+      - name: Run PowerShell script
         shell: pwsh
-        env:
-          VM_ADMIN_PASSWORD: ${{ secrets.VM_ADMIN_PASSWORD }}
         run: ./create-vm.ps1
