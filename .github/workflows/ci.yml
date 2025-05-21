@@ -1,20 +1,28 @@
-name: Azure PowerShell CI
+name: Azure PowerShell Automation
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  run-powershell-script:
+    runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    - name: Install PowerShell
-      uses: PowerShell/PowerShell@v1.0.0
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-    - name: Run PowerShell script
-      shell: pwsh
-      run: |
-        pwsh ./create-vm.ps1
+      - name: Install Azure PowerShell module
+        shell: pwsh
+        run: |
+          Install-Module -Name Az -Force -AllowClobber -Scope CurrentUser
+
+      - name: Run create-vm.ps1
+        shell: pwsh
+        run: ./create-vm.ps1
