@@ -1,5 +1,3 @@
-# create-vm.ps1
-
 Write-Host "Starting VM creation process..."
 
 # Check if connected to Azure
@@ -14,7 +12,7 @@ $location = "EastUS"
 $vmName = "PSAutoVM"
 $vmSize = "Standard_DS1_v2"
 $adminUsername = "yugsutariya"
-$adminPassword = ConvertTo-SecureString "Yugsutariya@3010" -AsPlainText -Force
+$adminPassword = ConvertTo-SecureString $env:VM_ADMIN_PASSWORD -AsPlainText -Force
 
 # Create resource group
 Write-Host "Creating resource group..."
