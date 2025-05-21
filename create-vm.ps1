@@ -3,12 +3,16 @@ Write-Host "Starting VM creation process..."
 # Ensure Az module is available
 Import-Module Az.Accounts
 
-# Check Azure connection
-$currentContext = Get-AzContext
-if (-not $currentContext) {
-    Write-Error "Not connected to Azure. Aborting script."
-    exit 1
-}
+# Manually authenticate using environment variables
+$clientId       = $env:AZURE_CLIENT_ID
+$clientSecret   = $env:AZURE_CLIENT_SECRET
+$tenantId       = $env:AZURE_TENANT_ID
+$subscriptionId = $env:AZURE_SUBSCRIPTION_ID
+
+$secureClientSecret = ConvertTo-SecureString $clientSecret -AsPlainText -Force
+$azCred = New-Object System.Management.Automation.PSCredential($clientId, $secureClientSecret)
+
+Connect-AzAccount -ServicePrincipal -Tenant $tenantId -Credential $azCred -Subscription $subscriptionId -ErrorAction Stop
 
 # VM Parameters
 $resourceGroup = "PSAutomationRG"
