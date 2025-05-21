@@ -24,4 +24,6 @@ jobs:
 
       - name: Run PowerShell script
         shell: pwsh
+        env:
+          AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
         run: ./create-vm.ps1
