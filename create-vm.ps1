@@ -3,15 +3,19 @@ Write-Host "Starting VM creation process..."
 # Ensure Az module is available
 Import-Module Az.Accounts
 
-# Manually authenticate using environment variables
-$clientId       = $env:AZURE_CLIENT_ID
-$clientSecret   = $env:AZURE_CLIENT_SECRET
-$tenantId       = $env:AZURE_TENANT_ID
-$subscriptionId = $env:AZURE_SUBSCRIPTION_ID
+# Parse JSON credentials from environment variable
+$azureJson = $env:AZURE_CREDENTIALS | ConvertFrom-Json
 
+$clientId       = $azureJson.clientId
+$clientSecret   = $azureJson.clientSecret
+$tenantId       = $azureJson.tenantId
+$subscriptionId = $azureJson.subscriptionId
+
+# Convert client secret
 $secureClientSecret = ConvertTo-SecureString $clientSecret -AsPlainText -Force
 $azCred = New-Object System.Management.Automation.PSCredential($clientId, $secureClientSecret)
 
+# Login to Azure
 Connect-AzAccount -ServicePrincipal -Tenant $tenantId -Credential $azCred -Subscription $subscriptionId -ErrorAction Stop
 
 # VM Parameters
